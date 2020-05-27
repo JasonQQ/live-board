@@ -1,0 +1,29 @@
+spring:
+  redis:
+    database: 0
+    cluster:
+      max-redirects: 3
+      nodes:
+        - 10.4.65.129:8000
+        - 10.4.65.111:7000
+        - 10.4.65.225:8000
+        - 10.4.65.129:7000
+        - 10.4.65.111:8000
+        - 10.4.65.225:7000
+    lettuce:
+      pool:
+        max-idle: 100
+        min-idle: 10
+        max-active: 300
+        max-wait: -1
+    timeout: 30000
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: order
+      auto-offset-reset: earliest
+      bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+

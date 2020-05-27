@@ -1,0 +1,47 @@
+package com.jasonqq.liveboard.gmv.function;
+
+import com.jasonqq.liveboard.domain.SubOrderDetail;
+import com.jasonqq.liveboard.gmv.OrderAccumulator;
+import org.apache.flink.api.common.functions.AggregateFunction;
+
+public class OrderAndGmvAggregateFunc
+        implements AggregateFunction<SubOrderDetail, OrderAccumulator, OrderAccumulator> {
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public OrderAccumulator createAccumulator() {
+        return new OrderAccumulator();
+    }
+
+    @Override
+    public OrderAccumulator add(SubOrderDetail record, OrderAccumulator acc) {
+        if (acc.getSiteId() == 0) {
+            acc.setSiteId(record.getSiteId());
+            acc.setSiteName(record.getSiteName());
+        }
+        acc.addOrderId(record.getOrderId());
+        acc.addSubOrderSum(1L);
+        acc.addQuantitySum(record.getQuantity());
+        acc.addGmv(record.getPrice() * record.getQuantity());
+        return acc;
+    }
+
+    @Override
+    public OrderAccumulator getResult(OrderAccumulator acc) {
+        return acc;
+    }
+
+    @Override
+    public OrderAccumulator merge(OrderAccumulator acc1, OrderAccumulator acc2) {
+        if (acc1.getSiteId() == 0) {
+            acc1.setSiteId(acc2.getSiteId());
+            acc1.setSiteName(acc2.getSiteName());
+        }
+        acc1.addOrderIds(acc2.getOrderIds());
+        acc1.addSubOrderSum(acc2.getSubOrderSum());
+        acc1.addQuantitySum(acc2.getQuantitySum());
+        acc1.addGmv(acc2.getGmv());
+        return acc1;
+    }
+}
