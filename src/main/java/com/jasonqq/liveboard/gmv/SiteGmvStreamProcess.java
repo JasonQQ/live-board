@@ -38,8 +38,6 @@ public class SiteGmvStreamProcess {
     private RedisConfig redisConfig;
     @Autowired
     private KafkaProperties kafkaProperties;
-    @Autowired
-    private RedisProperties redisProperties;
 
     public void siteGMVJob() throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();

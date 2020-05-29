@@ -28,8 +28,5 @@ spring:
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
   jackson:
     time-zone: GMT+8
-  output:
-    ansi:
-      enabled: DETECT
 
 
