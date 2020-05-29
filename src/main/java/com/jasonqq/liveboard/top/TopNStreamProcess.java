@@ -67,7 +67,8 @@ public class TopNStreamProcess {
                 .returns(TypeInformation.of(new TypeHint<Tuple2<Long, Long>>() {
                 }));
 
-        FlinkJedisClusterConfig jedisClusterConfig = new FlinkJedisClusterConfig.Builder().setNodes(redisConfig.getNodes()).build();
+        FlinkJedisClusterConfig jedisClusterConfig =
+                new FlinkJedisClusterConfig.Builder().setNodes(redisConfig.getNodes()).build();
         merchandiseRankStream
                 .addSink(new RedisSink<>(jedisClusterConfig, new RankingRedisMapper()))
                 .name("sink_redis_top_rank").uid("sink_redis_top_rank")

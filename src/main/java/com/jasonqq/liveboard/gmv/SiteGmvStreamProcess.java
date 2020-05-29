@@ -24,8 +24,11 @@ import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 import org.apache.flink.streaming.connectors.redis.RedisSink;
 import org.apache.flink.streaming.connectors.redis.common.config.FlinkJedisClusterConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
+import org.springframework.stereotype.Service;
 
+@Service
 public class SiteGmvStreamProcess {
 
     private static String ORDER_EXT_TOPIC_NAME = "order";
@@ -35,6 +38,8 @@ public class SiteGmvStreamProcess {
     private RedisConfig redisConfig;
     @Autowired
     private KafkaProperties kafkaProperties;
+    @Autowired
+    private RedisProperties redisProperties;
 
     public void siteGMVJob() throws Exception {
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
@@ -71,7 +76,8 @@ public class SiteGmvStreamProcess {
                 }))
                 .name("process_site_gmv_changed").uid("process_site_gmv_changed");
 
-        FlinkJedisClusterConfig jedisClusterConfig = new FlinkJedisClusterConfig.Builder().setNodes(redisConfig.getNodes()).build();
+        FlinkJedisClusterConfig jedisClusterConfig =
+                new FlinkJedisClusterConfig.Builder().setNodes(redisConfig.getNodes()).build();
         siteResultStream
                 .addSink(new RedisSink<>(jedisClusterConfig, new GmvRedisMapper()))
                 .name("sink_redis_site_gmv").uid("sink_redis_site_gmv")

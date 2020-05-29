@@ -1,6 +1,6 @@
 package com.jasonqq.liveboard.gmv.function;
 
-import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jasonqq.liveboard.gmv.OrderAccumulator;
 import org.apache.flink.api.common.state.MapState;
 import org.apache.flink.api.common.state.MapStateDescriptor;
@@ -32,15 +32,10 @@ public class OutputOrderGmvProcessFunc
         long key = value.getSiteId();
         OrderAccumulator cachedValue = state.get(key);
 
-        if (cachedValue == null || value.getSubOrderSum() != cachedValue.getSubOrderSum()) {
-            JSONObject result = new JSONObject();
-            result.put("site_id", value.getSiteId());
-            result.put("site_name", value.getSiteName());
-            result.put("quantity", value.getQuantitySum());
-            result.put("orderCount", value.getOrderIds().size());
-            result.put("subOrderCount", value.getSubOrderSum());
-            result.put("gmv", value.getGmv());
-            out.collect(new Tuple2<>(key, result.toJSONString()));
+        if (cachedValue == null || !value.getSubOrderSum().equals(cachedValue.getSubOrderSum())) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String result = objectMapper.writeValueAsString(value);
+            out.collect(new Tuple2<>(key, result));
             state.put(key, value);
         }
     }

@@ -4,12 +4,12 @@ spring:
     cluster:
       max-redirects: 3
       nodes:
-        - 10.4.65.129:8000
-        - 10.4.65.111:7000
-        - 10.4.65.225:8000
-        - 10.4.65.129:7000
-        - 10.4.65.111:8000
-        - 10.4.65.225:7000
+        - 10.4.65.55:7001
+        - 10.4.65.55:7002
+        - 10.4.65.55:7003
+        - 10.4.65.55:7004
+        - 10.4.65.55:7005
+        - 10.4.65.55:7006
     lettuce:
       pool:
         max-idle: 100
@@ -26,4 +26,10 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
+  jackson:
+    time-zone: GMT+8
+  output:
+    ansi:
+      enabled: DETECT
+
 
